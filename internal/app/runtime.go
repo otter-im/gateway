@@ -5,8 +5,9 @@ import (
 	"github.com/go-oauth2/oauth2/v4/manage"
 	"github.com/go-oauth2/oauth2/v4/server"
 	"github.com/gorilla/mux"
+	"github.com/otter-im/auth/internal/app/handler"
 	"github.com/otter-im/auth/internal/config"
-	"github.com/otter-im/auth/internal/handler"
+	"github.com/otter-im/auth/internal/rpc"
 	"golang.org/x/exp/rand"
 	mathRand "math/rand"
 	"net"
@@ -21,6 +22,7 @@ var (
 func Init() {
 	rand.Seed(uint64(time.Now().UnixNano()))
 	mathRand.Seed(time.Now().UnixNano())
+	AddExitHook(rpc.ExitHook)
 }
 
 func Run() error {
@@ -58,6 +60,7 @@ func initServer(router *mux.Router, tokenStore oauth2.TokenStore, clientStore oa
 	manager.MapClientStorage(clientStore)
 
 	srv := server.NewServer(server.NewConfig(), manager)
+	srv.CheckCodeChallengeMethod(oauth2.CodeChallengeS256)
 	srv.SetUserAuthorizationHandler(handler.UserAuthorizationHandler)
 
 	srv.SetInternalErrorHandler(handler.InternalErrorHandler)

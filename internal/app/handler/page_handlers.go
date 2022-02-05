@@ -2,6 +2,9 @@ package handler
 
 import (
 	"github.com/go-session/session"
+	"github.com/google/uuid"
+	rpc2 "github.com/otter-im/auth/internal/rpc"
+	"github.com/otter-im/identity/pkg/rpc"
 	"net/http"
 	"os"
 )
@@ -20,7 +23,23 @@ func LoginPageHandler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		}
-		store.Set("LoggedInUserId", r.Form.Get("username"))
+
+		response, err := rpc2.LookupService().Authorize(r.Context(), &rpc.AuthorizationRequest{
+			Username: r.Form.Get("username"),
+			Password: r.Form.Get("password"),
+		})
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		uid, err := uuid.FromBytes(response.GetId())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		store.Set("user_id", uid.String())
 		store.Save()
 
 		w.Header().Set("Location", "/auth")
@@ -38,7 +57,7 @@ func AuthPageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if _, ok := store.Get("LoggedInUserId"); !ok {
+	if _, ok := store.Get("user_id"); !ok {
 		w.Header().Set("Location", "/login")
 		w.WriteHeader(http.StatusFound)
 		return

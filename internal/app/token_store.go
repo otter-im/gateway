@@ -20,6 +20,8 @@ func (s *OtterTokenStore) Create(ctx context.Context, info oauth2.TokenInfo) err
 
 	if code := info.GetCode(); code != "" {
 		token.Code = code
+		token.CodeChallenge = info.GetCodeChallenge()
+		token.CodeChallengeMethod = info.GetCodeChallengeMethod().String()
 		token.CodeCreateAt = info.GetCodeCreateAt()
 		token.CodeExpiresAt = info.GetCodeCreateAt().Add(info.GetCodeExpiresIn())
 	}

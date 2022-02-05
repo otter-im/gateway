@@ -13,12 +13,12 @@ func UserAuthorizationHandler(w http.ResponseWriter, r *http.Request) (string, e
 		return "", err
 	}
 
-	uid, ok := store.Get("LoggedInUserId")
+	uid, ok := store.Get("user_id")
 	if !ok {
 		if r.Form == nil {
 			r.ParseForm()
 		}
-		store.Set("ReturnUri", r.Form)
+		store.Set("return_uri", r.Form)
 		store.Save()
 
 		w.Header().Set("Location", "/login")
@@ -27,7 +27,7 @@ func UserAuthorizationHandler(w http.ResponseWriter, r *http.Request) (string, e
 	}
 
 	userId := uid.(string)
-	store.Delete("LoggedInUserId")
+	store.Delete("user_id")
 	store.Save()
 	return userId, nil
 }
@@ -41,12 +41,12 @@ func AuthorizeHandler(srv *server.Server) func(w http.ResponseWriter, r *http.Re
 		}
 
 		var form url.Values
-		if v, ok := store.Get("ReturnUri"); ok {
+		if v, ok := store.Get("return_uri"); ok {
 			form = v.(url.Values)
 		}
 		r.Form = form
 
-		store.Delete("ReturnUri")
+		store.Delete("return_uri")
 		store.Save()
 
 		err = srv.HandleAuthorizeRequest(w, r)

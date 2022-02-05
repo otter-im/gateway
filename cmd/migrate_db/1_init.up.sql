@@ -2,9 +2,9 @@ CREATE TABLE auth_tokens
 (
     id                    uuid DEFAULT gen_random_uuid() PRIMARY KEY,
     client_id             varchar(255) NOT NULL,
-    user_id               varchar(255) NOT NULL,
-    redirect_uri          varchar(255) NOT NULL,
-    scope                 varchar(255) NOT NULL,
+    user_id               varchar(255),
+    redirect_uri          varchar(255),
+    scope                 varchar(255),
 
     code                  varchar(255) UNIQUE,
     code_challenge        varchar(255),

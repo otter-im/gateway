@@ -1,4 +1,4 @@
-package app
+package rpc
 
 import (
 	"github.com/otter-im/auth/internal/config"
@@ -14,6 +14,7 @@ var (
 	identOnce   sync.Once
 	identConn   *grpc.ClientConn
 	identLookup rpc.LookupServiceClient
+	identExit   func() error
 )
 
 func LookupService() rpc.LookupServiceClient {
@@ -26,13 +27,13 @@ func LookupService() rpc.LookupServiceClient {
 		}
 		identConn = conn
 		identLookup = pb.NewLookupServiceClient(identConn)
-
-		AddExitHook(func() error {
-			if err := identConn.Close(); err != nil {
-				return err
-			}
-			return nil
-		})
 	})
 	return identLookup
+}
+
+func ExitHook() error {
+	if err := identConn.Close(); err != nil {
+		return err
+	}
+	return nil
 }
