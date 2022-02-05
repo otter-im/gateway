@@ -32,8 +32,10 @@ func LookupService() rpc.LookupServiceClient {
 }
 
 func ExitHook() error {
-	if err := identConn.Close(); err != nil {
-		return err
+	if identConn != nil {
+		if err := identConn.Close(); err != nil {
+			return err
+		}
 	}
 	return nil
 }

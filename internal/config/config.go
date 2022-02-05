@@ -42,7 +42,7 @@ func PostgresPassword() string {
 }
 
 func PostgresDatabase() string {
-	return envString("POSTGRES_DATABASE", "otter_identity")
+	return envString("POSTGRES_DATABASE", "otter_auth")
 }
 
 func RedisNodes() map[string]string {
