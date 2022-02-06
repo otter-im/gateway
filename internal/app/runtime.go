@@ -7,7 +7,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/otter-im/auth/internal/app/handler"
 	"github.com/otter-im/auth/internal/config"
-	"github.com/otter-im/auth/internal/rpc"
+	"github.com/otter-im/auth/internal/service"
 	"golang.org/x/exp/rand"
 	mathRand "math/rand"
 	"net"
@@ -22,7 +22,7 @@ var (
 func Init() {
 	rand.Seed(uint64(time.Now().UnixNano()))
 	mathRand.Seed(time.Now().UnixNano())
-	AddExitHook(rpc.ExitHook)
+	AddExitHook(service.ExitHook)
 }
 
 func Run() error {
@@ -32,7 +32,7 @@ func Run() error {
 	clientStore := &OtterClientStore{}
 	srv := initServer(router, tokenStore, clientStore)
 
-	router.HandleFunc("/login", handler.LoginPageHandler)
+	router.HandleFunc("/login", handler.LoginPageHandler(srv))
 	router.HandleFunc("/auth", handler.AuthPageHandler)
 	router.HandleFunc("/test", handler.TestHandler(srv))
 

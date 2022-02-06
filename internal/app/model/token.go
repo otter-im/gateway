@@ -1,4 +1,4 @@
-package app
+package model
 
 import (
 	"github.com/go-oauth2/oauth2/v4"

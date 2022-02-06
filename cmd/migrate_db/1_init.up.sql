@@ -26,8 +26,9 @@ CREATE TABLE auth_clients
     id      varchar(255) NOT NULL PRIMARY KEY,
     secret  varchar(255) NOT NULL,
     domain  varchar(255) NOT NULL,
-    user_id varchar(255) NOT NULL
+    user_id varchar(255),
+    prompt  bool         NOT NULL DEFAULT TRUE
 );
 
-INSERT INTO auth_clients(id, secret, domain, user_id)
-VALUES ('e4212aad-79ea-49cd-bf92-cd102806b68f', 'changeme', 'http://localhost', 'tinyfluffs');
+INSERT INTO auth_clients(id, secret, domain, user_id, prompt)
+VALUES ('e4212aad-79ea-49cd-bf92-cd102806b68f', 'changeme', 'http://localhost', NULL, false);

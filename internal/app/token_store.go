@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"github.com/go-oauth2/oauth2/v4"
 	"github.com/go-redis/cache/v8"
+	"github.com/otter-im/auth/internal/app/model"
 	"time"
 )
 
 type OtterTokenStore struct{}
 
 func (s *OtterTokenStore) Create(ctx context.Context, info oauth2.TokenInfo) error {
-	token := &Token{
+	token := &model.Token{
 		ClientID:    info.GetClientID(),
 		UserID:      info.GetUserID(),
 		RedirectURI: info.GetRedirectURI(),
@@ -49,7 +50,7 @@ func (s *OtterTokenStore) RemoveByCode(ctx context.Context, code string) error {
 		return err
 	}
 	if _, err := Postgres().
-		ModelContext(ctx, new(Token)).
+		ModelContext(ctx, new(model.Token)).
 		Where("code = ?", code).
 		Delete(); err != nil {
 		return err
@@ -62,7 +63,7 @@ func (s *OtterTokenStore) RemoveByAccess(ctx context.Context, access string) err
 		return err
 	}
 	if _, err := Postgres().
-		ModelContext(ctx, new(Token)).
+		ModelContext(ctx, new(model.Token)).
 		Where("access = ?", access).
 		Delete(); err != nil {
 		return err
@@ -75,7 +76,7 @@ func (s *OtterTokenStore) RemoveByRefresh(ctx context.Context, refresh string) e
 		return err
 	}
 	if _, err := Postgres().
-		ModelContext(ctx, new(Token)).
+		ModelContext(ctx, new(model.Token)).
 		Where("refresh = ?", refresh).
 		Delete(); err != nil {
 		return err
@@ -84,7 +85,7 @@ func (s *OtterTokenStore) RemoveByRefresh(ctx context.Context, refresh string) e
 }
 
 func (s *OtterTokenStore) GetByCode(ctx context.Context, code string) (oauth2.TokenInfo, error) {
-	token := new(Token)
+	token := new(model.Token)
 	if err := RedisCache().Once(&cache.Item{
 		Ctx:   ctx,
 		Key:   fmt.Sprintf("token:code:%v", code),
@@ -100,7 +101,7 @@ func (s *OtterTokenStore) GetByCode(ctx context.Context, code string) (oauth2.To
 }
 
 func (s *OtterTokenStore) GetByAccess(ctx context.Context, access string) (oauth2.TokenInfo, error) {
-	token := new(Token)
+	token := new(model.Token)
 	if err := RedisCache().Once(&cache.Item{
 		Ctx:   ctx,
 		Key:   fmt.Sprintf("token:access:%v", access),
@@ -116,7 +117,7 @@ func (s *OtterTokenStore) GetByAccess(ctx context.Context, access string) (oauth
 }
 
 func (s *OtterTokenStore) GetByRefresh(ctx context.Context, refresh string) (oauth2.TokenInfo, error) {
-	token := new(Token)
+	token := new(model.Token)
 	if err := RedisCache().Once(&cache.Item{
 		Ctx:   ctx,
 		Key:   fmt.Sprintf("token:refresh:%v", refresh),
@@ -131,8 +132,8 @@ func (s *OtterTokenStore) GetByRefresh(ctx context.Context, refresh string) (oau
 	return token, nil
 }
 
-func (s *OtterTokenStore) selectTokenByCode(ctx context.Context, code string) (*Token, error) {
-	token := new(Token)
+func (s *OtterTokenStore) selectTokenByCode(ctx context.Context, code string) (*model.Token, error) {
+	token := new(model.Token)
 	if err := Postgres().
 		ModelContext(ctx, token).
 		Where("code = ?", code).
@@ -142,8 +143,8 @@ func (s *OtterTokenStore) selectTokenByCode(ctx context.Context, code string) (*
 	return token, nil
 }
 
-func (s *OtterTokenStore) selectTokenByAccess(ctx context.Context, access string) (*Token, error) {
-	token := new(Token)
+func (s *OtterTokenStore) selectTokenByAccess(ctx context.Context, access string) (*model.Token, error) {
+	token := new(model.Token)
 	if err := Postgres().
 		ModelContext(ctx, token).
 		Where("access = ?", access).
@@ -153,8 +154,8 @@ func (s *OtterTokenStore) selectTokenByAccess(ctx context.Context, access string
 	return token, nil
 }
 
-func (s *OtterTokenStore) selectTokenByRefresh(ctx context.Context, refresh string) (*Token, error) {
-	token := new(Token)
+func (s *OtterTokenStore) selectTokenByRefresh(ctx context.Context, refresh string) (*model.Token, error) {
+	token := new(model.Token)
 	if err := Postgres().
 		ModelContext(ctx, token).
 		Where("refresh = ?", refresh).

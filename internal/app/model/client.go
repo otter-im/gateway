@@ -1,4 +1,4 @@
-package app
+package model
 
 type Client struct {
 	tableName struct{} `json:"-" pg:"auth_clients"`
@@ -7,6 +7,7 @@ type Client struct {
 	Secret string `json:"secret" pg:"secret"`
 	Domain string `json:"domain" pg:"domain"`
 	UserID string `json:"user_id" pg:"user_id"`
+	Prompt bool   `json:"prompt" pg:"prompt"`
 }
 
 // GetID client id

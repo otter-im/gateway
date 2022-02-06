@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/go-oauth2/oauth2/v4"
 	"github.com/go-redis/cache/v8"
+	"github.com/otter-im/auth/internal/app/model"
 	"sync"
 	"time"
 )
@@ -17,7 +18,7 @@ func (s *OtterClientStore) GetByID(ctx context.Context, id string) (oauth2.Clien
 	s.RLock()
 	defer s.RUnlock()
 
-	token := new(Client)
+	token := new(model.Client)
 	if err := RedisCache().Once(&cache.Item{
 		Ctx:   ctx,
 		Key:   fmt.Sprintf("client:%v", id),
@@ -32,8 +33,8 @@ func (s *OtterClientStore) GetByID(ctx context.Context, id string) (oauth2.Clien
 	return token, nil
 }
 
-func (s *OtterClientStore) selectByID(ctx context.Context, id string) (*Client, error) {
-	client := new(Client)
+func (s *OtterClientStore) selectByID(ctx context.Context, id string) (*model.Client, error) {
+	client := new(model.Client)
 	if err := Postgres().
 		ModelContext(ctx, client).
 		Where("id = ?", id).
