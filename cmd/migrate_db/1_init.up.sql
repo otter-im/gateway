@@ -1,3 +1,5 @@
+GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO otter_auth;
+
 CREATE TABLE auth_tokens
 (
     id                    uuid DEFAULT gen_random_uuid() PRIMARY KEY,
