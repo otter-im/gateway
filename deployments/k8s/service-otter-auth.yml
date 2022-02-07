@@ -22,6 +22,10 @@ spec:
           env:
             - name: SERVICE_ENV
               value: prod
+            - name: IDENTITY_HOST
+              value: $(OTTER_IDENTITY_SERVICE_HOST)
+            - name: IDENTITY_PORT
+              value: $(OTTER_IDENTITY_SERVICE_PORT)
             - name: POSTGRES_ADDRESS
               value: $(OTTER_PGDB_POOLER_SERVICE_HOST):$(OTTER_PGDB_POOLER_SERVICE_PORT) # Assume using postgres-operator
             - name: POSTGRES_USER
