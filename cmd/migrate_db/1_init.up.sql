@@ -22,6 +22,7 @@ CREATE TABLE auth_tokens
     refresh_create_at     timestamp,
     refresh_expires_at    timestamp
 );
+GRANT SELECT,INSERT,UPDATE,DELETE ON auth_tokens TO otter_auth;
 
 CREATE TABLE auth_clients
 (
@@ -31,6 +32,7 @@ CREATE TABLE auth_clients
     user_id varchar(255),
     prompt  bool         NOT NULL DEFAULT TRUE
 );
+GRANT SELECT,INSERT,UPDATE,DELETE ON auth_clients TO otter_auth;
 
 INSERT INTO auth_clients(id, secret, domain, user_id, prompt)
 VALUES ('e4212aad-79ea-49cd-bf92-cd102806b68f', 'changeme', 'http://localhost', NULL, false);

@@ -11,22 +11,30 @@ import (
 )
 
 var (
-	identOnce   sync.Once
-	identConn   *grpc.ClientConn
-	identLookup rpc.LookupServiceClient
-	identExit   func() error
+	identConnOnce   sync.Once
+	identLookupOnce sync.Once
+	identConn       *grpc.ClientConn
+	identLookup     rpc.LookupServiceClient
+	identExit       func() error
 )
 
-func LookupService() rpc.LookupServiceClient {
-	identOnce.Do(func() {
+func IdentityConn() *grpc.ClientConn {
+	identConnOnce.Do(func() {
 		addr := net.JoinHostPort(config.IdentityHost(), config.IdentityPort())
 
 		conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
 			panic(err)
 		}
+		conn.Connect()
 		identConn = conn
-		identLookup = pb.NewLookupServiceClient(identConn)
+	})
+	return identConn
+}
+
+func LookupService() rpc.LookupServiceClient {
+	identLookupOnce.Do(func() {
+		identLookup = pb.NewLookupServiceClient(IdentityConn())
 	})
 	return identLookup
 }

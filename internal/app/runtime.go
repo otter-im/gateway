@@ -1,6 +1,9 @@
 package app
 
 import (
+	"context"
+	"errors"
+	"fmt"
 	"github.com/go-oauth2/oauth2/v4"
 	"github.com/go-oauth2/oauth2/v4/manage"
 	"github.com/go-oauth2/oauth2/v4/server"
@@ -9,6 +12,8 @@ import (
 	"github.com/otter-im/auth/internal/config"
 	"github.com/otter-im/auth/internal/service"
 	"golang.org/x/exp/rand"
+	"google.golang.org/grpc/connectivity"
+	"log"
 	mathRand "math/rand"
 	"net"
 	"net/http"
@@ -19,10 +24,23 @@ var (
 	exitHooks = make([]func() error, 0)
 )
 
-func Init() {
+func Init() error {
 	rand.Seed(uint64(time.Now().UnixNano()))
 	mathRand.Seed(time.Now().UnixNano())
 	AddExitHook(service.ExitHook)
+
+	if err := checkPostgres(); err != nil {
+		return err
+	}
+
+	if err := checkRedis(); err != nil {
+		return err
+	}
+
+	if err := checkIdentity(); err != nil {
+		return err
+	}
+	return nil
 }
 
 func Run() error {
@@ -37,7 +55,9 @@ func Run() error {
 	router.HandleFunc("/test", handler.TestHandler(srv))
 
 	http.Handle("/", router)
-	return http.ListenAndServe(net.JoinHostPort(config.ServiceHost(), config.ServicePort()), nil)
+	addr := net.JoinHostPort(config.ServiceHost(), config.ServicePort())
+	log.Printf("listening on: %v\n", addr)
+	return http.ListenAndServe(addr, nil)
 }
 
 func Exit() error {
@@ -69,4 +89,35 @@ func initServer(router *mux.Router, tokenStore oauth2.TokenStore, clientStore oa
 	router.HandleFunc("/oauth/authorize", handler.AuthorizeHandler(srv))
 	router.HandleFunc("/oauth/token", handler.TokenHandler(srv))
 	return srv
+}
+
+func checkPostgres() error {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	if err := Postgres().Ping(ctx); err != nil {
+		return fmt.Errorf("postgresql connection failure: %v", err)
+	}
+	return nil
+}
+
+func checkRedis() error {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	if cmd := RedisRing().Ping(ctx); cmd.Err() != nil {
+		return fmt.Errorf("redis connection failure: %v", cmd.Err())
+	}
+	return nil
+}
+
+func checkIdentity() error {
+	conn := service.IdentityConn()
+	if conn == nil {
+		return errors.New("previous failed connection")
+	}
+	if state := conn.GetState(); state == connectivity.TransientFailure || state == connectivity.Shutdown {
+		return errors.New("gRPC is in an invalid state")
+	}
+	return nil
 }

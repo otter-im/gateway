@@ -6,6 +6,7 @@ import (
 	"github.com/go-pg/migrations/v8"
 	"github.com/golang/glog"
 	"github.com/otter-im/auth/internal/app"
+	"log"
 	"os"
 )
 
@@ -28,7 +29,7 @@ func main() {
 	app.Init()
 	defer func() {
 		if err := app.Exit(); err != nil {
-			glog.Error(err)
+			log.Print(err)
 		}
 	}()
 
