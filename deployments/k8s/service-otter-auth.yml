@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otter-auth
+  labels:
+    app: otter-auth
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: otter-auth
+  template:
+    metadata:
+      labels:
+        app: otter-auth
+    spec:
+      containers:
+        - name: otter-auth
+          image: quay.io/otter-im/auth:latest
+          ports:
+            - containerPort: 50051
+          env:
+            - name: SERVICE_ENV
+              value: prod
+            - name: POSTGRES_ADDRESS
+              value: $(OTTER_PGDB_POOLER_SERVICE_HOST):$(OTTER_PGDB_POOLER_SERVICE_PORT) # Assume using postgres-operator
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: otter-auth.otter-pgdb.credentials.postgresql.acid.zalan.do
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: otter-auth.otter-pgdb.credentials.postgresql.acid.zalan.do
+                  key: password
+            - name: REDIS_NODES
+              value: $(REDIS_SENTINEL_SERVICE_HOST):$(REDIS_SENTINEL_SERVICE_PORT)
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-sentinel
+                  key: redis-password

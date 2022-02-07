@@ -1,0 +1,25 @@
+name: Otter Identity
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: golang:1.17-alpine
+    env:
+      CGO_ENABLED: 0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Download modules
+        run: go mod download
+
+# TODO: tests
+#      - name: "go test internal/app"
+#        run: go test github.com/otter-im/auth/internal/app/
