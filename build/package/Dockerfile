@@ -15,7 +15,7 @@ RUN go mod download && \
 RUN scripts/build.sh
 
 FROM alpine:latest
-COPY --from=0 /go/build/dist/otter-identity /usr/bin/otter-auth
+COPY --from=0 /go/build/dist/otter-auth /usr/bin/otter-auth
 
 RUN adduser --system --disabled-password --shell /bin/sh --home /var/lib/otter --uid 1001 otter && \
     addgroup --system --gid 1001 otter && \
