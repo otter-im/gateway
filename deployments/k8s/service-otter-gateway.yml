@@ -27,16 +27,16 @@ spec:
             - name: IDENTITY_PORT
               value: $(OTTER_IDENTITY_SERVICE_PORT)
             - name: POSTGRES_ADDRESS
-              value: $(OTTER_PGDB_POOLER_SERVICE_HOST):$(OTTER_PGDB_POOLER_SERVICE_PORT) # Assume using postgres-operator
+              value: $(OTTER_PGDB_SERVICE_HOST):$(OTTER_PGDB_SERVICE_PORT) # Assume using postgres-operator
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: otter-gateway.otter-pgdb.credentials.postgresql.acid.zalan.do
+                  name: auth.otter-pgdb.credentials.postgresql.acid.zalan.do
                   key: username
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: otter-auth.otter-pgdb.credentials.postgresql.acid.zalan.do
+                  name: auth.otter-pgdb.credentials.postgresql.acid.zalan.do
                   key: password
             - name: REDIS_NODES
               value: $(REDIS_SENTINEL_SERVICE_HOST):$(REDIS_SENTINEL_SERVICE_PORT)
