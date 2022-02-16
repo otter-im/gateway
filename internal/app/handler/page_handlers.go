@@ -4,7 +4,7 @@ import (
 	"github.com/go-oauth2/oauth2/v4/server"
 	"github.com/go-session/session"
 	"github.com/google/uuid"
-	"github.com/otter-im/auth/internal/service"
+	"github.com/otter-im/gateway/internal/service"
 	"github.com/otter-im/identity/pkg/rpc"
 	"net/http"
 	"os"
@@ -48,7 +48,7 @@ func LoginPageHandler(server *server.Server) func(http.ResponseWriter, *http.Req
 				w.Header().Set("Location", "/oauth/authorize")
 				w.WriteHeader(http.StatusFound)
 			} else {
-				w.Header().Set("Location", "/auth")
+				w.Header().Set("Location", "/gateway")
 				w.WriteHeader(http.StatusFound)
 			}
 			return
@@ -71,7 +71,7 @@ func AuthPageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// TODO: Use the mux router instead of serving the page like this
-	outputHtml(w, r, "web/static/auth.html")
+	outputHtml(w, r, "web/static/gateway.html")
 }
 
 func outputHtml(w http.ResponseWriter, r *http.Request, filename string) {

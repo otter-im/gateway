@@ -1,4 +1,4 @@
-module github.com/otter-im/auth
+module github.com/otter-im/gateway
 
 go 1.17
 

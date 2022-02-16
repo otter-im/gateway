@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/go-pg/migrations/v8"
 	"github.com/golang/glog"
-	"github.com/otter-im/auth/internal/app"
+	"github.com/otter-im/gateway/internal/app"
 	"log"
 	"os"
 )

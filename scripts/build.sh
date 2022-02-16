@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 package=cmd/otter_auth.go
-package_name=otter-auth
+package_name=otter-gateway
 version=0.0.1
 build_dir=./dist
 # For cross-compilation
@@ -15,10 +15,10 @@ if [ "$GOOS" = "windows" ]; then
 fi
 
 if [ "$SERVICE_ENV" = "dev" ]; then
-  ld="-X github.com/otter-im/auth/pkg.Version=$(git rev-parse HEAD)"
+  ld="-X github.com/otter-im/gateway/pkg.Version=$(git rev-parse HEAD)"
   tag='-tags dev'
 else
-  ld="-X github.com/otter-im/auth/pkg.Version=v${version}"
+  ld="-X github.com/otter-im/gateway/pkg.Version=v${version}"
   tag=''
 fi
 

@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: otter-auth
+  name: otter-gateway
   labels:
-    app: otter-auth
+    app: otter-gateway
 spec:
   replicas: 4
   selector:
     matchLabels:
-      app: otter-auth
+      app: otter-gateway
   template:
     metadata:
       labels:
-        app: otter-auth
+        app: otter-gateway
     spec:
       containers:
-        - name: otter-auth
-          image: quay.io/otter-im/auth:latest
+        - name: otter-gateway
+          image: quay.io/otter-im/gateway:latest
           ports:
-            - containerPort: 50051
+            - containerPort: 3000
           env:
             - name: SERVICE_ENV
               value: prod
@@ -31,7 +31,7 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: otter-auth.otter-pgdb.credentials.postgresql.acid.zalan.do
+                  name: otter-gateway.otter-pgdb.credentials.postgresql.acid.zalan.do
                   key: username
             - name: POSTGRES_PASSWORD
               valueFrom:

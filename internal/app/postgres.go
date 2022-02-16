@@ -3,7 +3,7 @@ package app
 import (
 	"crypto/tls"
 	"github.com/go-pg/pg/v10"
-	"github.com/otter-im/auth/internal/config"
+	"github.com/otter-im/gateway/internal/config"
 	"sync"
 )
 

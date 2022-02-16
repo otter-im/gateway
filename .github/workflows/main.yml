@@ -22,4 +22,4 @@ jobs:
 
 # TODO: tests
 #      - name: "go test internal/app"
-#        run: go test github.com/otter-im/auth/internal/app/
+#        run: go test github.com/otter-im/gateway/internal/app/

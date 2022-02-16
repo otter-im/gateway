@@ -18,15 +18,11 @@ func ServiceHost() string {
 }
 
 func ServicePort() string {
-	return fmt.Sprintf("%v", envInt("SERVICE_PORT", 50051))
+	return fmt.Sprintf("%v", envInt("SERVICE_PORT", 3000))
 }
 
-func IdentityHost() string {
-	return envString("IDENTITY_HOST", "localhost")
-}
-
-func IdentityPort() string {
-	return fmt.Sprintf("%v", envInt("IDENTITY_PORT", 50050))
+func IdentityAddress() string {
+	return envString("IDENTITY_ADDRESS", "localhost:50050")
 }
 
 func PostgresAddress() string {

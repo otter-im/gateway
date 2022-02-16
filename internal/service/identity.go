@@ -1,12 +1,11 @@
 package service
 
 import (
-	"github.com/otter-im/auth/internal/config"
+	"github.com/otter-im/gateway/internal/config"
 	"github.com/otter-im/identity/pkg/rpc"
 	pb "github.com/otter-im/identity/pkg/rpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"net"
 	"sync"
 )
 
@@ -20,9 +19,7 @@ var (
 
 func IdentityConn() *grpc.ClientConn {
 	identConnOnce.Do(func() {
-		addr := net.JoinHostPort(config.IdentityHost(), config.IdentityPort())
-
-		conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		conn, err := grpc.Dial(config.IdentityAddress(), grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
 			panic(err)
 		}

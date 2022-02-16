@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"github.com/otter-im/auth/internal/app"
+	"github.com/otter-im/gateway/internal/app"
 	"log"
 	"os"
 )

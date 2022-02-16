@@ -1,6 +1,6 @@
-# Otter Social > Auth Server
+# Otter Social > API Gateway
 
-An OAuth2 authentication server
+Reverse proxy API gateway with authentication.
 
 ## License
 

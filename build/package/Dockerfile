@@ -15,7 +15,7 @@ RUN go mod download && \
 RUN scripts/build.sh
 
 FROM alpine:latest
-COPY --from=0 /go/build/dist/otter-auth /usr/bin/otter-auth
+COPY --from=0 /go/build/dist/otter-gateway /usr/bin/otter-gateway
 COPY --from=0 --chown=1001:1001 /go/build/web /var/lib/otter/web
 
 RUN adduser --system --disabled-password --shell /bin/sh --home /var/lib/otter --uid 1001 otter && \
@@ -25,4 +25,4 @@ RUN adduser --system --disabled-password --shell /bin/sh --home /var/lib/otter -
 USER otter
 WORKDIR /var/lib/otter
 EXPOSE 50051
-CMD ["/usr/bin/otter-auth"]
+CMD ["/usr/bin/otter-gateway"]

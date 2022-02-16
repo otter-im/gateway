@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/go-oauth2/oauth2/v4"
 	"github.com/go-redis/cache/v8"
-	"github.com/otter-im/auth/internal/app/model"
+	"github.com/otter-im/gateway/internal/app/model"
 	"sync"
 	"time"
 )

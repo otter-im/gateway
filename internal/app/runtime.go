@@ -8,9 +8,9 @@ import (
 	"github.com/go-oauth2/oauth2/v4/manage"
 	"github.com/go-oauth2/oauth2/v4/server"
 	"github.com/gorilla/mux"
-	"github.com/otter-im/auth/internal/app/handler"
-	"github.com/otter-im/auth/internal/config"
-	"github.com/otter-im/auth/internal/service"
+	"github.com/otter-im/gateway/internal/app/handler"
+	"github.com/otter-im/gateway/internal/config"
+	"github.com/otter-im/gateway/internal/service"
 	"golang.org/x/exp/rand"
 	"google.golang.org/grpc/connectivity"
 	"log"
@@ -25,6 +25,8 @@ var (
 )
 
 func Init() error {
+	log.Printf("environment: %s\n", config.ServiceEnvironment())
+
 	rand.Seed(uint64(time.Now().UnixNano()))
 	mathRand.Seed(time.Now().UnixNano())
 	AddExitHook(service.ExitHook)
@@ -51,8 +53,9 @@ func Run() error {
 	srv := initServer(router, tokenStore, clientStore)
 
 	router.HandleFunc("/login", handler.LoginPageHandler(srv))
-	router.HandleFunc("/auth", handler.AuthPageHandler)
-	router.HandleFunc("/test", handler.TestHandler(srv))
+	router.HandleFunc("/gateway", handler.AuthPageHandler)
+
+	router.Handle("/test/secure_page", &handler.AuthProxyHandler{Server: srv, Host: "localhost", Scheme: "http"})
 
 	http.Handle("/", router)
 	addr := net.JoinHostPort(config.ServiceHost(), config.ServicePort())
