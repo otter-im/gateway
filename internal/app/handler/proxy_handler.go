@@ -19,11 +19,12 @@ func (a *AuthProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	a.proxyOnce.Do(func() {
 		a.proxy = &httputil.ReverseProxy{Director: director(a.Host, a.Scheme)}
 	})
-	_, err := a.Server.ValidationBearerToken(r)
+	token, err := a.Server.ValidationBearerToken(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	r.Header.Set("X-User-ID", token.GetUserID())
 	a.proxy.ServeHTTP(w, r)
 }
 

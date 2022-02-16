@@ -21,6 +21,14 @@ func ServicePort() string {
 	return fmt.Sprintf("%v", envInt("SERVICE_PORT", 3000))
 }
 
+func APIProfileHost() string {
+	return envString("API_PROFILE_HOST", "localhost:3001")
+}
+
+func APIProfileScheme() string {
+	return envString("API_PROFILE_SCHEME", "http")
+}
+
 func IdentityAddress() string {
 	return envString("IDENTITY_ADDRESS", "localhost:50050")
 }
@@ -38,7 +46,11 @@ func PostgresPassword() string {
 }
 
 func PostgresDatabase() string {
-	return envString("POSTGRES_DATABASE", "otter_auth")
+	return envString("POSTGRES_DATABASE", "auth")
+}
+
+func PostgresSSL() bool {
+	return envBool("POSTGRES_SSL", false)
 }
 
 func RedisNodes() map[string]string {
@@ -83,4 +95,12 @@ func envInt(key string, v int) int {
 		return v
 	}
 	return result
+}
+
+func envBool(key string, v bool) bool {
+	resultString := envString(key, fmt.Sprintf("%v", v))
+	if resultString == "true" {
+		return true
+	}
+	return false
 }

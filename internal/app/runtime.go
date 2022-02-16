@@ -52,10 +52,10 @@ func Run() error {
 	clientStore := &OtterClientStore{}
 	srv := initServer(router, tokenStore, clientStore)
 
-	router.HandleFunc("/login", handler.LoginPageHandler(srv))
-	router.HandleFunc("/gateway", handler.AuthPageHandler)
+	router.HandleFunc("/login", handler.LoginPageHandler())
+	router.HandleFunc("/auth", handler.AuthPageHandler)
 
-	router.Handle("/test/secure_page", &handler.AuthProxyHandler{Server: srv, Host: "localhost", Scheme: "http"})
+	router.Handle("/profile", &handler.AuthProxyHandler{Server: srv, Host: config.APIProfileHost(), Scheme: config.APIProfileScheme()})
 
 	http.Handle("/", router)
 	addr := net.JoinHostPort(config.ServiceHost(), config.ServicePort())
