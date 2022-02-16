@@ -20,6 +20,9 @@ jobs:
       - name: Download modules
         run: go mod download
 
+      - name: Build Project
+        run: ./scripts/build.sh
+
 # TODO: tests
 #      - name: "go test internal/app"
 #        run: go test github.com/otter-im/gateway/internal/app/
