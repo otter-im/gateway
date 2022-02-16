@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-package=cmd/otter_auth.go
+package=cmd/otter_gateway.go
 package_name=otter-gateway
 version=0.0.1
 build_dir=./dist
