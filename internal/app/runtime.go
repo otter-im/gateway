@@ -56,6 +56,7 @@ func Run() error {
 	router.HandleFunc("/auth", handler.AuthPageHandler)
 
 	router.Handle("/profile", &handler.AuthProxyHandler{Server: srv, Host: config.APIProfileHost(), Scheme: config.APIProfileScheme()})
+	router.Handle("/profile/{id}", &handler.AuthProxyHandler{Server: srv, Host: config.APIProfileHost(), Scheme: config.APIProfileScheme()})
 
 	http.Handle("/", router)
 	addr := net.JoinHostPort(config.ServiceHost(), config.ServicePort())

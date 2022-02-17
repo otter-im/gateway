@@ -24,7 +24,7 @@ func (a *AuthProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	r.Header.Set("X-User-ID", token.GetUserID())
+	r.Header.Set("X-Otter-Login-User-Id", token.GetUserID())
 	a.proxy.ServeHTTP(w, r)
 }
 
